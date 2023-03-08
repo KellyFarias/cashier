@@ -374,13 +374,14 @@ public function paymentIntent(Request $request,$userId){
         'amount'=>$request->amount*100,
         'currency'=>'mxn',
         'customer'=>$user->stripe_id,
-        'payment_method'=>$paymentMethod
+        'payment_method'=>$paymentMethod,
+        'confirm'=>true
        ]);
-       $confirm=Cashier::stripe()->paymentIntents->confirm($paymentIntent->id);
+       //$confirm=Cashier::stripe()->paymentIntents->confirm($paymentIntent->id);
         return response()->json([
             'success' => true,
             'message' => 'Pago realizado',
-            'intent'=>$confirm
+            'intent'=>$paymentIntent->status
         ]);
     } catch (Throwable $th) {
         return response()->json([
