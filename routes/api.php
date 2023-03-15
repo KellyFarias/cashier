@@ -43,7 +43,9 @@ Route::prefix('user/')
 
         Route::post('create-card/{userId}',  [UserController::class, 'createCard'])
             ->name('create_card');
-
+            Route::post('update-default-card/{userId}',  [UserController::class, 'updateDefaultCard'])
+            ->name('update_default_card');
+            
         Route::get('cards/{userId}',  [UserController::class, 'getCards'])
             ->name('get_cards');
 

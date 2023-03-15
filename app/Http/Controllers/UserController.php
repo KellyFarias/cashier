@@ -202,10 +202,10 @@ class UserController extends Controller
         }
     }
 
-    public function createCard(Request $request, $customerId)
+    public function createCard(Request $request, $userId)
     {
         try {
-            $user = User::findOrFail($customerId);
+            $user = User::findOrFail($userId);
             $paymentMethod = Cashier::stripe()->paymentMethods->create($request->all());            
             $user->addPaymentMethod($paymentMethod);
             $user->updateDefaultPaymentMethodFromStripe();
@@ -394,4 +394,28 @@ public function paymentIntent(Request $request,$userId){
     }
 
 }
+
+public function updateDefaultCard(Request $request, $userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
+            $paymentMethod = Cashier::stripe()->paymentMethods->create($request->all());            
+            $user->updateDefaultPaymentMethodFromStripe();
+            $user->updateDefaultPaymentMethod($paymentMethod);
+            return response()
+                ->json([
+                    'success' => true,
+                    'message' => 'Tarjeta actualizada correctamente'
+                ]);
+        } catch (Throwable $th) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar tarjeta',
+                'error_file' => $th->getFile(),
+                'error_line' => $th->getLine(),
+                'error_message' => $th->getMessage(),
+            ]);
+        }
+    }
 }
